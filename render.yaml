@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: liteedgpt-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: PRIMARY_LLM
+        value: gemini
+      - key: DEBUG_MODE
+        value: "false"
