@@ -41,16 +41,16 @@
 - Detect subject, grade level, and complexity
 - Generate tailored, age-appropriate responses
 - Support multiple languages (English & Hindi)
-- Process images (diagrams, homework, etc.)
+- Process images (diagrams, homework, classwork etc.)
 
 ### Why LiteEdGPT?
 
-| Problem | LiteEdGPT Solution |
-|---------|-------------------|
-| Generic AI responses | Tailored responses based on grade level |
-| One-size-fits-all | Adapts complexity to student level |
-| No context understanding | Multi-agent classification system |
-| Single LLM dependency | Multi-provider support (Cody, Gemini, OpenAI) |
+| Problem                  | LiteEdGPT Solution                            |
+| ------------------------ | --------------------------------------------- |
+| Generic AI responses     | Tailored responses based on grade level       |
+| One-size-fits-all        | Adapts complexity to student level            |
+| No context understanding | Multi-agent classification system             |
+| Single LLM dependency    | Multi-provider support (Cody, Gemini, OpenAI) |
 
 ---
 
@@ -58,26 +58,26 @@
 
 ### Core Features
 
-| Feature | Description |
-|---------|-------------|
-| 🤖 **Multi-Agent System** | Classifier + Response agents working together |
-| 📚 **Educational Focus** | Specialized for academic queries |
+| Feature                     | Description                                   |
+| --------------------------- | --------------------------------------------- |
+| 🤖 **Multi-Agent System**   | Classifier + Response agents working together |
+| 📚 **Educational Focus**    | Specialized for academic queries              |
 | 🎯 **Smart Classification** | Auto-detects subject, grade level, complexity |
-| 🌐 **Multi-Language** | Supports English and Hindi |
-| 📷 **Image Support** | Process homework photos, diagrams |
-| 🔄 **Multi-Provider LLM** | Cody, Gemini, OpenAI, Local models |
-| 💾 **Session Memory** | Maintains conversation context |
-| ⚡ **Rate Limiting** | Built-in request throttling |
-| 📝 **Markdown Responses** | Well-formatted, readable answers |
+| 🌐 **Multi-Language**       | Supports English and Hindi                    |
+| 📷 **Image Support**        | Process homework photos, diagrams             |
+| 🔄 **Multi-Provider LLM**   | Cody, Gemini, OpenAI, Local models            |
+| 💾 **Session Memory**       | Maintains conversation context                |
+| ⚡ **Rate Limiting**        | Built-in request throttling                   |
+| 📝 **Markdown Responses**   | Well-formatted, readable answers              |
 
 ### Educational Capabilities
 
-| Capability | Supported Levels |
-|------------|-----------------|
-| **Grade Levels** | Class 1-12, Undergraduate, Postgraduate, PhD |
-| **Subjects** | Math, Science, Physics, Chemistry, Biology, English, Hindi, History, Geography, Computer Science, Commerce, Economics |
-| **Query Types** | Concept Explanation, Problem Solving, Homework Help, Exam Preparation |
-| **Complexity** | Basic, Intermediate, Advanced |
+| Capability       | Supported Levels                                                                                                      |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Grade Levels** | Class 1-12, Undergraduate, Postgraduate, PhD                                                                          |
+| **Subjects**     | Math, Science, Physics, Chemistry, Biology, English, Hindi, History, Geography, Computer Science, Commerce, Economics |
+| **Query Types**  | Concept Explanation, Problem Solving, Homework Help, Exam Preparation                                                 |
+| **Complexity**   | Basic, Intermediate, Advanced                                                                                         |
 
 ---
 
@@ -169,12 +169,12 @@
 
 ### Why Multi-Agent?
 
-| Single Agent | Multi-Agent (LiteEdGPT) |
-|--------------|-------------------------|
-| One prompt for all | Specialized prompts per task |
-| Generic responses | Context-aware responses |
-| No query understanding | Deep query classification |
-| Hard to maintain | Modular, maintainable |
+| Single Agent           | Multi-Agent (LiteEdGPT)      |
+| ---------------------- | ---------------------------- |
+| One prompt for all     | Specialized prompts per task |
+| Generic responses      | Context-aware responses      |
+| No query understanding | Deep query classification    |
+| Hard to maintain       | Modular, maintainable        |
 
 ### Agent Descriptions
 
@@ -183,6 +183,7 @@
 **Purpose:** Analyze and classify incoming queries
 
 **Responsibilities:**
+
 - Determine if query is educational
 - Identify subject area
 - Detect grade level
@@ -192,6 +193,7 @@
 - Calculate confidence score
 
 **Output:**
+
 ```python
 ClassificationResult(
     is_educational=True,
@@ -210,6 +212,7 @@ ClassificationResult(
 **Purpose:** Generate tailored educational responses
 
 **Responsibilities:**
+
 - Build system prompt based on classification
 - Adapt language and complexity
 - Follow query-type specific guidelines
@@ -217,6 +220,7 @@ ClassificationResult(
 - Add helpful footers and tips
 
 **Prompt Customization:**
+
 ```
 Classification → System Prompt
 ─────────────────────────────────
@@ -231,6 +235,7 @@ Language: Hindi → Respond in Hindi
 **Purpose:** Coordinate all agents and services
 
 **Responsibilities:**
+
 - Manage request pipeline
 - Route to appropriate agents
 - Maintain conversation history
@@ -243,31 +248,31 @@ Language: Hindi → Respond in Hindi
 
 ### Core Framework
 
-| Technology | Version | Why We Chose It |
-|------------|---------|-----------------|
-| **Python** | 3.9+ | Industry standard for AI/ML, extensive libraries |
-| **FastAPI** | 0.100+ | Modern, fast, async support, auto-documentation |
-| **Pydantic** | 2.0+ | Data validation, type hints, serialization |
-| **Uvicorn** | 0.23+ | ASGI server, high performance, async |
+| Technology   | Version | Why We Chose It                                  |
+| ------------ | ------- | ------------------------------------------------ |
+| **Python**   | 3.9+    | Industry standard for AI/ML, extensive libraries |
+| **FastAPI**  | 0.100+  | Modern, fast, async support, auto-documentation  |
+| **Pydantic** | 2.0+    | Data validation, type hints, serialization       |
+| **Uvicorn**  | 0.23+   | ASGI server, high performance, async             |
 
 ### Why FastAPI over Flask/Django?
 
-| Feature | FastAPI | Flask | Django |
-|---------|---------|-------|--------|
-| Async Support | ✅ Native | ⚠️ Limited | ⚠️ Limited |
-| Auto API Docs | ✅ Built-in | ❌ Manual | ❌ Manual |
-| Type Validation | ✅ Pydantic | ❌ Manual | ⚠️ Forms |
-| Performance | ⭐⭐⭐ | ⭐⭐ | ⭐ |
-| Learning Curve | Easy | Easy | Medium |
+| Feature         | FastAPI     | Flask      | Django     |
+| --------------- | ----------- | ---------- | ---------- |
+| Async Support   | ✅ Native   | ⚠️ Limited | ⚠️ Limited |
+| Auto API Docs   | ✅ Built-in | ❌ Manual  | ❌ Manual  |
+| Type Validation | ✅ Pydantic | ❌ Manual  | ⚠️ Forms   |
+| Performance     | ⭐⭐⭐      | ⭐⭐       | ⭐         |
+| Learning Curve  | Easy        | Easy       | Medium     |
 
 ### LLM Integration
 
-| Provider | Library/Method | Why |
-|----------|---------------|-----|
-| **Cody** | CLI (`cody chat`) | Enterprise Sourcegraph, Claude models |
-| **Gemini** | `google-generativeai` | Free tier, good performance |
-| **OpenAI** | `openai` | Industry standard, GPT-4 |
-| **Local** | HTTP API | Privacy, no API costs |
+| Provider   | Library/Method        | Why                                   |
+| ---------- | --------------------- | ------------------------------------- |
+| **Cody**   | CLI (`cody chat`)     | Enterprise Sourcegraph, Claude models |
+| **Gemini** | `google-generativeai` | Free tier, good performance           |
+| **OpenAI** | `openai`              | Industry standard, GPT-4              |
+| **Local**  | HTTP API              | Privacy, no API costs                 |
 
 ### Why Cody as Default?
 
@@ -278,11 +283,11 @@ Language: Hindi → Respond in Hindi
 
 ### Additional Libraries
 
-| Library | Purpose |
-|---------|---------|
-| `python-dotenv` | Environment variable management |
-| `Pillow` | Image processing |
-| `aiohttp` | Async HTTP client (for local models) |
+| Library         | Purpose                              |
+| --------------- | ------------------------------------ |
+| `python-dotenv` | Environment variable management      |
+| `Pillow`        | Image processing                     |
+| `aiohttp`       | Async HTTP client (for local models) |
 
 ---
 
@@ -325,18 +330,18 @@ LiteEdGPT/
 
 ### File Descriptions
 
-| File | Purpose | Key Components |
-|------|---------|----------------|
-| `main.py` | API entry point | FastAPI app, routes, middleware |
-| `config.py` | Configuration | Environment variables, constants |
-| `orchestrator.py` | Pipeline coordinator | Multi-agent orchestration |
-| `classifier_agent.py` | Query analysis | Classification logic |
-| `response_agent.py` | Response generation | Prompt building, formatting |
-| `llm_service.py` | LLM abstraction | Cody, Gemini, OpenAI, Local |
-| `cache_service.py` | Caching | In-memory response cache |
-| `image_service.py` | Image handling | Processing, compression |
-| `validators.py` | Input validation | Sanitization, security |
-| `prompts.py` | Prompt templates | Reusable prompt patterns |
+| File                  | Purpose              | Key Components                   |
+| --------------------- | -------------------- | -------------------------------- |
+| `main.py`             | API entry point      | FastAPI app, routes, middleware  |
+| `config.py`           | Configuration        | Environment variables, constants |
+| `orchestrator.py`     | Pipeline coordinator | Multi-agent orchestration        |
+| `classifier_agent.py` | Query analysis       | Classification logic             |
+| `response_agent.py`   | Response generation  | Prompt building, formatting      |
+| `llm_service.py`      | LLM abstraction      | Cody, Gemini, OpenAI, Local      |
+| `cache_service.py`    | Caching              | In-memory response cache         |
+| `image_service.py`    | Image handling       | Processing, compression          |
+| `validators.py`       | Input validation     | Sanitization, security           |
+| `prompts.py`          | Prompt templates     | Reusable prompt patterns         |
 
 ---
 
@@ -344,12 +349,12 @@ LiteEdGPT/
 
 ### Prerequisites
 
-| Requirement | Version | Check Command |
-|-------------|---------|---------------|
-| Python | 3.9+ | `python --version` |
-| pip | Latest | `pip --version` |
-| Node.js | 16+ | `node --version` (for Cody CLI) |
-| npm | 8+ | `npm --version` (for Cody CLI) |
+| Requirement | Version | Check Command                   |
+| ----------- | ------- | ------------------------------- |
+| Python      | 3.9+    | `python --version`              |
+| pip         | Latest  | `pip --version`                 |
+| Node.js     | 16+     | `node --version` (for Cody CLI) |
+| npm         | 8+      | `npm --version` (for Cody CLI)  |
 
 ### Step 1: Clone Repository
 
@@ -469,11 +474,11 @@ USE_CACHE=False
 
 ### Available Cody Models
 
-| Model | Description |
-|-------|-------------|
+| Model                                             | Description                     |
+| ------------------------------------------------- | ------------------------------- |
 | `anthropic::2024-10-22::claude-sonnet-4-5-latest` | Claude Sonnet 4.5 (Recommended) |
-| `anthropic::2024-10-22::claude-opus-4-5-latest` | Claude Opus 4.5 (Most powerful) |
-| `anthropic::2024-10-22::claude-haiku-4-5-latest` | Claude Haiku 4.5 (Fastest) |
+| `anthropic::2024-10-22::claude-opus-4-5-latest`   | Claude Opus 4.5 (Most powerful) |
+| `anthropic::2024-10-22::claude-haiku-4-5-latest`  | Claude Haiku 4.5 (Fastest)      |
 
 ### Switching LLM Providers
 
@@ -542,12 +547,12 @@ INFO:     Uvicorn running on http://0.0.0.0:8000
 
 ### Access Points
 
-| URL | Description |
-|-----|-------------|
-| http://localhost:8000 | Root endpoint |
-| http://localhost:8000/docs | Swagger UI (Interactive API docs) |
-| http://localhost:8000/health | Health check |
-| http://localhost:8000/redoc | ReDoc documentation |
+| URL                          | Description                       |
+| ---------------------------- | --------------------------------- |
+| http://localhost:8000        | Root endpoint                     |
+| http://localhost:8000/docs   | Swagger UI (Interactive API docs) |
+| http://localhost:8000/health | Health check                      |
+| http://localhost:8000/redoc  | ReDoc documentation               |
 
 ---
 
@@ -555,18 +560,19 @@ INFO:     Uvicorn running on http://0.0.0.0:8000
 
 ### Endpoints Overview
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Root info |
-| GET | `/health` | Health check |
-| POST | `/api/chat` | Main chat endpoint |
-| POST | `/api/feedback` | Submit feedback |
+| Method | Endpoint        | Description        |
+| ------ | --------------- | ------------------ |
+| GET    | `/`             | Root info          |
+| GET    | `/health`       | Health check       |
+| POST   | `/api/chat`     | Main chat endpoint |
+| POST   | `/api/feedback` | Submit feedback    |
 
 ### POST `/api/chat`
 
 **Description:** Process educational query through multi-agent pipeline
 
 **Request:**
+
 ```
 Content-Type: multipart/form-data
 
@@ -578,12 +584,14 @@ Parameters:
 ```
 
 **Example Request (cURL):**
+
 ```bash
 curl -X POST http://localhost:8000/api/chat \
   -F "text=Explain photosynthesis for a Class 6 student"
 ```
 
 **Example Request (with image):**
+
 ```bash
 curl -X POST http://localhost:8000/api/chat \
   -F "text=Solve this math problem" \
@@ -591,6 +599,7 @@ curl -X POST http://localhost:8000/api/chat \
 ```
 
 **Success Response:**
+
 ```json
 {
   "success": true,
@@ -617,6 +626,7 @@ curl -X POST http://localhost:8000/api/chat \
 ```
 
 **Non-Educational Response:**
+
 ```json
 {
   "success": false,
@@ -635,6 +645,7 @@ curl -X POST http://localhost:8000/api/chat \
 ### GET `/health`
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -647,6 +658,7 @@ curl -X POST http://localhost:8000/api/chat \
 ### POST `/api/feedback`
 
 **Request:**
+
 ```
 Content-Type: multipart/form-data
 
@@ -657,6 +669,7 @@ Parameters:
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -670,13 +683,13 @@ Parameters:
 
 ### Provider Comparison
 
-| Feature | Cody | Gemini | OpenAI | Local |
-|---------|------|--------|--------|-------|
-| **Cost** | Enterprise license | Free tier | Pay per token | Free |
-| **Speed** | Fast | Fast | Medium | Varies |
-| **Quality** | Excellent | Good | Excellent | Varies |
-| **Privacy** | Enterprise | Cloud | Cloud | Full |
-| **Vision** | ❌ | ✅ | ✅ | ✅ (some) |
+| Feature     | Cody               | Gemini    | OpenAI        | Local     |
+| ----------- | ------------------ | --------- | ------------- | --------- |
+| **Cost**    | Enterprise license | Free tier | Pay per token | Free      |
+| **Speed**   | Fast               | Fast      | Medium        | Varies    |
+| **Quality** | Excellent          | Good      | Excellent     | Varies    |
+| **Privacy** | Enterprise         | Cloud     | Cloud         | Full      |
+| **Vision**  | ❌                 | ✅        | ✅            | ✅ (some) |
 
 ### Adding a New Provider
 
@@ -687,13 +700,13 @@ class MyProviderService(BaseLLMService):
     def __init__(self):
         # Initialize your provider
         pass
-    
-    async def generate(self, prompt, system_prompt=None, 
+
+    async def generate(self, prompt, system_prompt=None,
                        temperature=0.7, max_tokens=2000):
         # Implement generation
         pass
-    
-    async def generate_with_image(self, prompt, image_data, 
+
+    async def generate_with_image(self, prompt, image_data,
                                    system_prompt=None):
         # Implement vision capability
         pass
@@ -717,17 +730,17 @@ PROVIDERS = {
 
 ### Planned Features
 
-| Feature | Priority | Status |
-|---------|----------|--------|
-| Android App | High | 🔄 In Progress |
-| iOS App | Medium | 📋 Planned |
-| Web Frontend | Medium | 📋 Planned |
-| Voice Input | Low | 📋 Planned |
-| PDF Processing | Medium | 📋 Planned |
-| Quiz Generation | Medium | 📋 Planned |
-| Progress Tracking | Low | 📋 Planned |
-| Multi-turn Memory | Medium | 📋 Planned |
-| Redis Caching | Low | 📋 Planned |
+| Feature           | Priority | Status         |
+| ----------------- | -------- | -------------- |
+| Android App       | High     | 🔄 In Progress |
+| iOS App           | Medium   | 📋 Planned     |
+| Web Frontend      | Medium   | 📋 Planned     |
+| Voice Input       | Low      | 📋 Planned     |
+| PDF Processing    | Medium   | 📋 Planned     |
+| Quiz Generation   | Medium   | 📋 Planned     |
+| Progress Tracking | Low      | 📋 Planned     |
+| Multi-turn Memory | Medium   | 📋 Planned     |
+| Redis Caching     | Low      | 📋 Planned     |
 
 ### Potential Improvements
 
