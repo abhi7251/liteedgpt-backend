@@ -15,8 +15,8 @@ class ClassificationResult(BaseModel):
     confidence: float = Field(default=0.0, description="Confidence score of classification")
 
 class ClassifierAgent:
-    def __init__(self):
-        self.llm_service = LLMServiceFactory.create()
+    def __init__(self, api_key: str = None):
+        self.llm_service = LLMServiceFactory.create(api_key=api_key)
         
     async def classify(self, 
                       text_input: str, 

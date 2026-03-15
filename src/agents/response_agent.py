@@ -5,8 +5,8 @@ from src.utils.prompts import PromptTemplates
 
 
 class ResponseAgent:
-    def __init__(self):
-        self.llm_service = LLMServiceFactory.create()
+    def __init__(self, api_key: str = None):
+        self.llm_service = LLMServiceFactory.create(api_key=api_key)
         self.prompt_templates = PromptTemplates()
 
     async def generate_response(

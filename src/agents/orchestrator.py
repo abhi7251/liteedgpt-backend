@@ -1,7 +1,6 @@
 """
 Agent Orchestrator for LiteEdGPT
 """
-import json
 from typing import Optional
 from datetime import datetime
 
@@ -10,11 +9,11 @@ class AgentOrchestrator:
     def __init__(self):
         print("[LiteEdGPT] Initializing Agent Orchestrator...")
         self.conversation_history = {}
-        
+
         try:
             from src.services.cache_service import CacheService
             from src.services.image_service import ImageService
-            
+
             self.cache = CacheService()
             self.image_service = ImageService()
             print("[LiteEdGPT] All services loaded successfully")
@@ -31,7 +30,7 @@ class AgentOrchestrator:
         session_id: Optional[str] = None,
         api_key: Optional[str] = None,
     ) -> dict:
-        """Process incoming request"""
+        """Process incoming request through classifier → response agent pipeline"""
         start_time = datetime.now()
 
         try:
@@ -44,11 +43,9 @@ class AgentOrchestrator:
                     "processing_time": (datetime.now() - start_time).total_seconds(),
                 }
 
-            # Create LLM with user's API key
+            # Validate API key by creating GeminiService
             from src.services.llm_service import GeminiService
             llm = GeminiService(api_key=api_key)
-
-            # Check if LLM initialized properly
             if not llm.model:
                 return {
                     "success": False,
@@ -57,74 +54,68 @@ class AgentOrchestrator:
                     "processing_time": (datetime.now() - start_time).total_seconds(),
                 }
 
-            # Process image if provided
+            # Step 1: Process image if provided
             image_context = None
             if image_data and self.image_service:
                 try:
                     image_context = await self.image_service.process_image(image_data)
-                    print(f"[Pipeline] Image processed")
+                    print("[Pipeline] Image processed")
                 except Exception as e:
                     print(f"[Pipeline] Image processing error: {e}")
 
-            # Build system prompt
-            system_prompt = """You are LiteEdGPT, a friendly and helpful educational assistant for students.
+            # Step 2: Classify the query
+            from src.agents.classifier_agent import ClassifierAgent
+            classifier = ClassifierAgent(api_key=api_key)
+            classification = await classifier.classify(
+                text_input=text_input,
+                image_data=image_data,
+                image_context=image_context,
+            )
+            print(
+                f"[Pipeline] Classified → subject={classification.subject}, "
+                f"type={classification.query_type}, lang={classification.language}, "
+                f"complexity={classification.complexity}, confidence={classification.confidence:.2f}"
+            )
 
-Your role:
-- Help students understand concepts clearly
-- Solve problems step-by-step
-- Explain in simple, easy-to-understand language
-- Be encouraging and supportive
-- Support both English and Hindi
+            # Step 3: Build conversation context from history
+            context = None
+            if session_id and session_id in self.conversation_history:
+                history = self.conversation_history[session_id]
+                if history:
+                    context = {"previous_context": history[-1].get("response", "")}
 
-Guidelines:
-- For math problems: Show each step clearly
-- For concepts: Use examples and analogies
-- For homework: Guide, don't just give answers
-- Keep responses concise but complete
+            # Step 4: Generate response via ResponseAgent
+            from src.agents.response_agent import ResponseAgent
+            response_agent = ResponseAgent(api_key=api_key)
+            result = await response_agent.generate_response(
+                query=text_input,
+                classification=classification,
+                image_data=image_data,
+                context=context,
+            )
 
-Always be patient and helpful! 📚"""
-
-            # Generate response
-            print(f"[Pipeline] Generating response for: {text_input[:50]}...")
-            
-            if image_data:
-                response_text = await llm.generate_with_image(
-                    prompt=text_input,
-                    image_data=image_data,
-                    system_prompt=system_prompt
-                )
-            else:
-                response_text = await llm.generate(
-                    prompt=text_input,
-                    system_prompt=system_prompt
-                )
-
-            # Check for errors in response
-            if response_text.startswith("Error:"):
+            if not result["success"]:
                 return {
-                    "success": False,
-                    "message": response_text,
-                    "type": "error",
+                    **result,
                     "processing_time": (datetime.now() - start_time).total_seconds(),
                 }
 
-            # Store in conversation history
+            # Step 5: Store in conversation history
             if session_id:
                 if session_id not in self.conversation_history:
                     self.conversation_history[session_id] = []
                 self.conversation_history[session_id].append({
                     "query": text_input,
-                    "response": response_text[:500],
+                    "response": result["message"][:500],
                 })
 
             processing_time = (datetime.now() - start_time).total_seconds()
             print(f"[Pipeline] Response generated in {processing_time:.2f}s")
 
             return {
-                "success": True,
-                "message": response_text,
-                "type": "educational_response",
+                **result,
                 "metadata": {
+                    **result.get("metadata", {}),
                     "has_image": image_data is not None,
                     "user_id": user_id,
                     "session_id": session_id,
