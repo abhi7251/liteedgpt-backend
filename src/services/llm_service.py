@@ -7,8 +7,8 @@ from typing import Optional
 class GeminiService:
     def __init__(self, api_key: str = None):
         self.api_key = api_key or os.getenv("GOOGLE_API_KEY", "")
-        self.model = None
-        self.vision_model = None
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
+        self.vision_model = genai.GenerativeModel('gemini-2.5-flash')
         
         if self.api_key:
             try:
