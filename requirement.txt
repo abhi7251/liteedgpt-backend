@@ -8,3 +8,6 @@ pillow>=10.0.0
 pydantic>=2.0.0
 python-multipart>=0.0.6
 aiohttp>=3.9.0
+# pytesseract is a Python wrapper and requires the external Tesseract OCR
+# binary to be installed separately and available on the system PATH.
+pytesseract>=0.3.10

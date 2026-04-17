@@ -35,10 +35,21 @@ class Validators:
         if len(image_data) > 10 * 1024 * 1024:
             return False, "Image too large (max 10MB)"
         
-        # Check if it's a valid image format
-        import imghdr
-        image_type = imghdr.what(None, image_data)
-        
+        # Validate image content and format using Pillow.
+        # This avoids Python-version issues with imghdr.
+        try:
+            from PIL import Image
+            from io import BytesIO
+
+            image = Image.open(BytesIO(image_data))
+            image.verify()
+
+            # Re-open after verify() because verify() leaves the file in an unusable state.
+            image = Image.open(BytesIO(image_data))
+            image_type = (image.format or "").lower()
+        except Exception:
+            return False, "Invalid image format"
+
         if image_type not in ['jpeg', 'png', 'gif', 'bmp', 'webp']:
             return False, "Invalid image format"
         

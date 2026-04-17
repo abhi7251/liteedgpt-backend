@@ -6,17 +6,28 @@ from src.config import config
 
 class ClassificationResult(BaseModel):
     is_educational: bool = Field(description="Whether the query is education-related")
-    grade_level: Optional[str] = Field(description="Education level of the student")
-    subject: Optional[str] = Field(description="Subject area of the query")
+    grade_level: Optional[str] = Field(default=None, description="Education level of the student")
+    subject: Optional[str] = Field(default=None, description="Subject area of the query")
     language: str = Field(default="English", description="Preferred response language")
-    query_type: str = Field(description="Type of educational query")
+    query_type: str = Field(default="general_knowledge", description="Type of educational query")
     topics: list[str] = Field(default_factory=list, description="Specific topics identified")
     complexity: str = Field(default="intermediate", description="Query complexity level")
     confidence: float = Field(default=0.0, description="Confidence score of classification")
 
 class ClassifierAgent:
-    def __init__(self, api_key: str = None):
-        self.llm_service = LLMServiceFactory.create(api_key=api_key)
+    def __init__(
+        self,
+        api_key: str = None,
+        provider: str = "gemini",
+        local_model_url: str = None,
+        local_model_name: str = None,
+    ):
+        self.llm_service = LLMServiceFactory.create(
+            api_key=api_key,
+            provider=provider,
+            local_model_url=local_model_url,
+            local_model_name=local_model_name,
+        )
         
     async def classify(self, 
                       text_input: str, 
@@ -47,8 +58,10 @@ class ClassifierAgent:
         Respond ONLY in valid JSON format."""
         
         try:
-            # If image is provided, use vision model
-            if image_data:
+            # Prefer OCR-enriched text classification when OCR text is available.
+            has_ocr_text = bool(image_context and image_context.get("extracted_text"))
+
+            if image_data and not has_ocr_text:
                 response = await self.llm_service.generate_with_image(
                     prompt=classification_prompt,
                     image_data=image_data,
@@ -59,6 +72,14 @@ class ClassifierAgent:
                     prompt=classification_prompt,
                     system_prompt=system_prompt,
                     temperature=0.3  # Lower temperature for more consistent classification
+                )
+
+            # Fallback when vision/model path returns an error string
+            if isinstance(response, str) and response.startswith("Error:"):
+                response = await self.llm_service.generate(
+                    prompt=classification_prompt,
+                    system_prompt=system_prompt,
+                    temperature=0.3
                 )
             
             # Parse the response
@@ -87,11 +108,14 @@ Query: "{text_input}"
 """
         
         if image_context:
+            extracted_text = image_context.get("extracted_text")
+            extracted_text = extracted_text if isinstance(extracted_text, str) and extracted_text else "None"
             prompt += f"""
 Image Context:
 - Contains Math: {image_context.get('contains_math', False)}
 - Contains Diagram: {image_context.get('contains_diagram', False)}
-- Extracted Text: {image_context.get('extracted_text', 'None')[:200]}
+- Extracted Text: {extracted_text[:200]}
+- Image Metadata: {image_context.get('metadata', {})}
 """
         
         prompt += """

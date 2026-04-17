@@ -88,7 +88,12 @@ async def chat(
     image: Optional[UploadFile] = File(None),
     user_id: Optional[str] = Form(None),
     session_id: Optional[str] = Form(None),
-    api_key: Optional[str] = Form(None)
+    api_key: Optional[str] = Form(None),
+    gemini_api_key: Optional[str] = Form(None),
+    openai_api_key: Optional[str] = Form(None),
+    model_provider: Optional[str] = Form("gemini"),
+    local_model_url: Optional[str] = Form(None),
+    local_model_name: Optional[str] = Form(None),
 ):
     """
     Main chat endpoint for processing educational queries
@@ -126,7 +131,12 @@ async def chat(
             image_data=image_data,
             user_id=user_id,
             session_id=session_id,
-            api_key=api_key
+            api_key=api_key,
+            gemini_api_key=gemini_api_key,
+            openai_api_key=openai_api_key,
+            model_provider=model_provider,
+            local_model_url=local_model_url,
+            local_model_name=local_model_name,
         )
         
         return response

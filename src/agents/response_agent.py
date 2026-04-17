@@ -5,8 +5,19 @@ from src.utils.prompts import PromptTemplates
 
 
 class ResponseAgent:
-    def __init__(self, api_key: str = None):
-        self.llm_service = LLMServiceFactory.create(api_key=api_key)
+    def __init__(
+        self,
+        api_key: str = None,
+        provider: str = "gemini",
+        local_model_url: str = None,
+        local_model_name: str = None,
+    ):
+        self.llm_service = LLMServiceFactory.create(
+            api_key=api_key,
+            provider=provider,
+            local_model_url=local_model_url,
+            local_model_name=local_model_name,
+        )
         self.prompt_templates = PromptTemplates()
 
     async def generate_response(
@@ -39,6 +50,15 @@ class ResponseAgent:
                 response = await self.llm_service.generate_with_image(
                     prompt=user_prompt, image_data=image_data, system_prompt=system_prompt
                 )
+
+                # Fallback: if multimodal fails, continue with OCR/text-only context.
+                if isinstance(response, str) and response.startswith("Error:"):
+                    response = await self.llm_service.generate(
+                        prompt=user_prompt,
+                        system_prompt=system_prompt,
+                        temperature=0.7,
+                        max_tokens=2500,
+                    )
             else:
                 response = await self.llm_service.generate(
                     prompt=user_prompt,
@@ -46,6 +66,14 @@ class ResponseAgent:
                     temperature=0.7,
                     max_tokens=2500,
                 )
+
+            if isinstance(response, str) and response.startswith("Error:"):
+                return {
+                    "success": False,
+                    "message": response,
+                    "type": "error",
+                    "metadata": {},
+                }
 
             # Format and structure the response
             formatted_response = self._format_response(response, classification)
@@ -156,6 +184,12 @@ Language-Specific Guidelines:
 
         if context and context.get("previous_context"):
             prompt += f"Previous Context: {context['previous_context']}\n\n"
+
+        if context and context.get("ocr_text"):
+            prompt += f"OCR Text From Image: {context['ocr_text'][:1500]}\n\n"
+
+        if context and context.get("image_metadata"):
+            prompt += f"Image Metadata: {context['image_metadata']}\n\n"
 
         if classification.topics:
             prompt += f"Identified Topics: {', '.join(classification.topics)}\n\n"
