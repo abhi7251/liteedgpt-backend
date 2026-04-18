@@ -3,6 +3,7 @@ Agent Orchestrator for LiteEdGPT
 """
 from typing import Optional
 from datetime import datetime
+from src.config import config
 
 
 class AgentOrchestrator:
@@ -42,8 +43,16 @@ class AgentOrchestrator:
             provider = (model_provider or "gemini").lower()
 
             key_map = {
-                "gemini": gemini_api_key or (api_key if provider == "gemini" else None),
-                "openai": openai_api_key or (api_key if provider == "openai" else None),
+                "gemini": (
+                    gemini_api_key
+                    or (api_key if provider == "gemini" else None)
+                    or config.GOOGLE_API_KEY
+                ),
+                "openai": (
+                    openai_api_key
+                    or (api_key if provider == "openai" else None)
+                    or config.OPENAI_API_KEY
+                ),
             }
 
             provider_chain = self._build_provider_chain(provider)
