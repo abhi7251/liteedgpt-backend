@@ -67,8 +67,10 @@ class GeminiService:
 
 
 class OpenAIService:
-    def __init__(self, api_key: str = None):
+    def __init__(self, api_key: str = None, base_url: str = None):
         self.api_key = api_key or os.getenv("OPENAI_API_KEY", "")
+        # allow overriding the OpenAI base_url (useful for Bedrock OpenAI-compatible endpoint)
+        self.base_url = base_url or os.getenv("BEDROCK_BASE_URL", "") or None
         self.model_name = config.OPENAI_MODEL
         self.vision_model_name = config.OPENAI_VISION_MODEL
         self.client = None
@@ -77,8 +79,12 @@ class OpenAIService:
             try:
                 from openai import AsyncOpenAI
 
-                self.client = AsyncOpenAI(api_key=self.api_key)
-                print(f"[LiteEdGPT] OpenAI Service initialized with {self.model_name}")
+                if self.base_url:
+                    self.client = AsyncOpenAI(api_key=self.api_key, base_url=self.base_url)
+                    print(f"[LiteEdGPT] OpenAI Service initialized with {self.model_name} (base_url={self.base_url})")
+                else:
+                    self.client = AsyncOpenAI(api_key=self.api_key)
+                    print(f"[LiteEdGPT] OpenAI Service initialized with {self.model_name}")
             except Exception as e:
                 print(f"[LiteEdGPT] OpenAI init error: {e}")
         else:
@@ -220,6 +226,12 @@ class LLMServiceFactory:
         selected = (provider or "gemini").lower()
         if selected == "openai":
             return OpenAIService(api_key=api_key)
+        if selected == "bedrock":
+            # pick up Bedrock bearer token from env if not supplied
+            bedrock_key = api_key or os.getenv("AWS_BEARER_TOKEN_BEDROCK", "")
+            # allow passing a custom base_url via 'local_model_url' or BEDROCK_BASE_URL env
+            bedrock_base = local_model_url or os.getenv("BEDROCK_BASE_URL", "") or None
+            return OpenAIService(api_key=bedrock_key, base_url=bedrock_base)
         if selected == "local":
             return LocalModelService(base_url=local_model_url, model_name=local_model_name)
         return GeminiService(api_key=api_key)
